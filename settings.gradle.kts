@@ -10,3 +10,5 @@ plugins {
 }
 
 rootProject.name = "JSONTreeViewer"
+
+include("shared")
