@@ -11,7 +11,12 @@ kotlin {
 
     jvm("desktop")
 
+    js {
+        browser()
+    }
+
     sourceSets {
+
         val commonMain by getting {
             dependencies {
                 api(compose.material3)

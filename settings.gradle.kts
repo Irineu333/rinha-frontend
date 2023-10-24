@@ -13,3 +13,4 @@ rootProject.name = "JSONTreeViewer"
 
 include("shared")
 include("desktop")
+include("web")
