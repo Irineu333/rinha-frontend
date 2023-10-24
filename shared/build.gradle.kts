@@ -3,14 +3,25 @@ version = "1.0.0-DEV"
 
 plugins {
     kotlin("multiplatform")
+    id("org.jetbrains.compose")
 }
 
 kotlin {
-    jvm {
-        jvmToolchain(8)
-    }
+    jvmToolchain(11)
+
+    jvm("desktop")
 
     sourceSets {
-        val jvmMain by getting
+        val commonMain by getting {
+            dependencies {
+                api(compose.material3)
+            }
+        }
+
+        val desktopMain by getting {
+            dependencies {
+                api(compose.desktop.common)
+            }
+        }
     }
 }
