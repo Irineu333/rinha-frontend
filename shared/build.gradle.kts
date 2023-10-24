@@ -26,6 +26,7 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 api(compose.desktop.common)
+                api(compose.preview)
             }
         }
     }
