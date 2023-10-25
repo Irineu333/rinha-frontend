@@ -24,9 +24,9 @@ fun DesktopApp() {
         openFilePicker = {
             showFilePicker = true
         },
+        modifier = Modifier.fillMaxSize(),
         isLoading = file != null && content == null,
-        content = content,
-        modifier = Modifier.fillMaxSize()
+        content = content
     )
 
     FilePicker(
