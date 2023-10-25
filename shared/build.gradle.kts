@@ -19,12 +19,19 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
+
+                // Compose
                 api(compose.material3)
+
+                // Voyager Navigator
+                api("cafe.adriel.voyager:voyager-navigator:1.0.0-rc05")
             }
         }
 
         val desktopMain by getting {
             dependencies {
+
+                // Compose
                 api(compose.desktop.common)
                 api(compose.preview)
 

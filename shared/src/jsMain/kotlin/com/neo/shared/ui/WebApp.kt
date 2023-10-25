@@ -1,8 +1,6 @@
 package com.neo.shared.ui
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import kotlinx.browser.document
 import org.w3c.dom.HTMLInputElement
 import org.w3c.files.File
@@ -44,8 +42,8 @@ fun WebApp() {
 
     App(
         openFilePicker = { fileInput.click() },
-        modifier = Modifier.fillMaxSize(),
         isLoading = file != null && content == null,
-        content = content
+        content = content,
+        fileName = file?.name
     )
 }

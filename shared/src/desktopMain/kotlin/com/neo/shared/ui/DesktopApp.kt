@@ -1,8 +1,6 @@
 package com.neo.shared.ui
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,9 +28,9 @@ fun DesktopApp() {
         openFilePicker = {
             showFilePicker = true
         },
-        modifier = Modifier.fillMaxSize(),
         isLoading = file != null && content == null,
-        content = content
+        content = content,
+        fileName = file?.name
     )
 
     FilePicker(
