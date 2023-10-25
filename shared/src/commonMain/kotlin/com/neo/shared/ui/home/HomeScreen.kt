@@ -1,10 +1,9 @@
 package com.neo.shared.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +16,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    openFilePicker: () -> Unit,
 ) = Column(
     modifier,
     Arrangement.Center,
@@ -33,7 +34,19 @@ fun HomeScreen(
 
     Spacer(Modifier.height(16.dp))
 
-    Button(onClick = { /*TODO*/ }) {
-        Text("select file")
+    Button(
+        enabled = !isLoading,
+        onClick = { openFilePicker() },
+    ) {
+        AnimatedContent(isLoading) {
+            if (it) {
+                CircularProgressIndicator(
+                    Modifier.size(18.dp),
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text("select file")
+            }
+        }
     }
 }

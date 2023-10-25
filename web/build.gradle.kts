@@ -10,7 +10,7 @@ kotlin {
 
     jvmToolchain(11)
 
-    js {
+    js(IR) {
 
         binaries.executable()
 
