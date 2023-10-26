@@ -2,11 +2,49 @@ package com.neo.shared.core.util
 
 import com.neo.shared.core.model.Line
 
-class ObjectScope(private val indent: Int) {
-    val lines = mutableListOf<Line>()
+abstract class JsonScope(private val indent: Int) {
+    private val lines = mutableListOf<Line>()
+
+    fun addLiteral(line: Line.Literal) {
+        lines.add(line)
+    }
+
+    fun addStruct(
+        scope: JsonScope,
+        parent: Line.Parent,
+        type: Line.Type,
+        collapsed: Boolean = false
+    ) {
+
+        lines.add(
+            Line.Struct.Start(
+                indent,
+                parent,
+                type,
+                collapsed
+            )
+        )
+
+        if (collapsed) return
+
+        lines.addAll(scope.lines)
+
+        lines.add(
+            Line.Struct.End(
+                indent,
+                parent,
+                type
+            )
+        )
+    }
+
+    fun build() = lines.toList()
+}
+
+class ObjectScope(private val indent: Int) : JsonScope(indent) {
 
     fun addLiteral(key: String, value: Any) {
-        lines.add(
+        addLiteral(
             Line.Literal(
                 indent,
                 Line.Parent.Object(key),
@@ -15,61 +53,39 @@ class ObjectScope(private val indent: Int) {
         )
     }
 
-    fun addObject(key: String, collapsed: Boolean = false, build: ObjectScope.() -> Unit) {
-        lines.add(
-            Line.Struct.Start(
-                indent,
-                Line.Parent.Object(key),
-                Line.Type.OBJECT,
-                collapsed = collapsed
-            )
-        )
-
-        if (collapsed) return
-
-        lines.addAll(ObjectScope(indent + 1).apply(build).lines)
-
-        lines.add(
-            Line.Struct.End(
-                indent,
-                Line.Parent.Object(key),
-                Line.Type.OBJECT
-            )
+    fun addObject(
+        key: String,
+        collapsed: Boolean = false,
+        build: ObjectScope.() -> Unit
+    ) {
+        addStruct(
+            ObjectScope(indent + 1).apply(build),
+            Line.Parent.Object(key),
+            Line.Type.OBJECT,
+            collapsed
         )
     }
 
-    fun addArray(key: String, collapsed: Boolean = false, build: ArrayScope.() -> Unit) {
-        lines.add(
-            Line.Struct.Start(
-                indent,
-                Line.Parent.Object(key),
-                Line.Type.ARRAY,
-                collapsed = collapsed
-            )
-        )
-
-        if (collapsed) return
-
-        lines.addAll(ArrayScope(indent + 1).apply(build).lines)
-
-        lines.add(
-            Line.Struct.End(
-                indent,
-                Line.Parent.Object(key),
-                Line.Type.ARRAY
-            )
+    fun addArray(
+        key: String,
+        collapsed: Boolean = false,
+        build: ArrayScope.() -> Unit
+    ) {
+        addStruct(
+            ArrayScope(indent + 1).apply(build),
+            Line.Parent.Object(key),
+            Line.Type.ARRAY,
+            collapsed
         )
     }
 }
 
-class ArrayScope(private val indent: Int) {
-
-    val lines = mutableListOf<Line>()
+class ArrayScope(private val indent: Int) : JsonScope(indent) {
 
     private var mIndex = 0
 
     fun addLiteral(index: Int = mIndex++, value: Any) {
-        lines.add(
+        addLiteral(
             Line.Literal(
                 indent,
                 Line.Parent.Array(index),
@@ -78,49 +94,29 @@ class ArrayScope(private val indent: Int) {
         )
     }
 
-    fun addObject(index: Int = mIndex++, collapsed: Boolean = false, build: ObjectScope.() -> Unit) {
-        lines.add(
-            Line.Struct.Start(
-                indent,
-                Line.Parent.Array(index),
-                Line.Type.OBJECT,
-                collapsed = collapsed
-            )
-        )
-
-        if (collapsed) return
-
-        lines.addAll(ObjectScope(indent + 1).apply(build).lines)
-
-        lines.add(
-            Line.Struct.End(
-                indent,
-                Line.Parent.Array(index),
-                Line.Type.OBJECT
-            )
+    fun addObject(
+        index: Int = mIndex++,
+        collapsed: Boolean = false,
+        build: ObjectScope.() -> Unit
+    ) {
+        addStruct(
+            ObjectScope(indent + 1).apply(build),
+            Line.Parent.Array(index),
+            Line.Type.OBJECT,
+            collapsed
         )
     }
 
-    fun addArray(index: Int = mIndex++, collapsed: Boolean = false, build: ArrayScope.() -> Unit) {
-        lines.add(
-            Line.Struct.Start(
-                indent,
-                Line.Parent.Array(index),
-                Line.Type.ARRAY,
-                collapsed = collapsed
-            )
-        )
-
-        if (collapsed) return
-
-        lines.addAll(ArrayScope(indent + 1).apply(build).lines)
-
-        lines.add(
-            Line.Struct.End(
-                indent,
-                Line.Parent.Array(index),
-                Line.Type.ARRAY
-            )
+    fun addArray(
+        index: Int = mIndex++,
+        collapsed: Boolean = false,
+        build: ArrayScope.() -> Unit
+    ) {
+        addStruct(
+            ArrayScope(indent + 1).apply(build),
+            Line.Parent.Array(index),
+            Line.Type.ARRAY,
+            collapsed
         )
     }
 }
@@ -138,7 +134,7 @@ fun createObject(
         )
     )
 
-    addAll(ObjectScope(1).apply(build).lines)
+    addAll(ObjectScope(1).apply(build).build())
 
     add(
         Line.Struct.End(
@@ -151,7 +147,7 @@ fun createObject(
 
 fun createArray(
     key: String,
-    build: ArrayScope.() -> Unit
+    scope: ArrayScope.() -> Unit
 ) = buildList {
 
     add(
@@ -162,7 +158,7 @@ fun createArray(
         )
     )
 
-    addAll(ArrayScope(1).apply(build).lines)
+    addAll(ArrayScope(1).apply(scope).build())
 
     add(
         Line.Struct.End(
