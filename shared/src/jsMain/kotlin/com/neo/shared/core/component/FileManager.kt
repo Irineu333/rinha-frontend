@@ -33,11 +33,6 @@ class FileManagerImpl : FileManager() {
 
             null
         }
-    }
-
-    override suspend fun openFilePicker() {
-
-        input.click()
 
         input.onchange = {
 
@@ -49,5 +44,9 @@ class FileManagerImpl : FileManager() {
 
             null
         }
+    }
+
+    override suspend fun openFilePicker() {
+        input.click()
     }
 }
