@@ -34,9 +34,6 @@ kotlin {
                 // Compose
                 api(compose.desktop.common)
                 api(compose.preview)
-
-                // File Picker
-                api("com.darkrockstudios:mpfilepicker:2.1.0")
             }
         }
     }
