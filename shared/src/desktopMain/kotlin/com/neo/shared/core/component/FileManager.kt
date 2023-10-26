@@ -1,9 +1,9 @@
 package com.neo.shared.core.component
 
+import com.neo.shared.core.model.JsonFileFilter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.swing.JFileChooser
-import javax.swing.filechooser.FileNameExtensionFilter
 
 actual object FileManagerFactory {
     actual fun create(): FileManager = FileManagerImpl()
@@ -15,13 +15,7 @@ class FileManagerImpl : FileManager() {
         JFileChooser().apply {
             fileSelectionMode = JFileChooser.FILES_ONLY
 
-            addChoosableFileFilter(
-                FileNameExtensionFilter("JSON File", ".json"),
-            )
-
-            addChoosableFileFilter(
-                FileNameExtensionFilter("JSON Text File", ".txt"),
-            )
+            fileFilter = JsonFileFilter
 
             showOpenDialog(null)
 
