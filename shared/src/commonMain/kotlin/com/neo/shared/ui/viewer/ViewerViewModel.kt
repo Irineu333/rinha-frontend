@@ -8,10 +8,7 @@ import com.neo.shared.core.model.Resource
 import com.neo.shared.core.model.getLines
 import com.neo.shared.core.util.toElement
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -58,6 +55,53 @@ class ViewerViewModel(private val file: File) : ScreenModel {
             )
         }.getOrElse {
             Resource.Result.Failure("Invalid JSON")
+        }
+    }
+
+    suspend fun toggle(element: Element) {
+        _elements.update {
+            if (it is Resource.Result.Success) {
+                Resource.Result.Success(
+                    toggle(it.data, element)
+                )
+            } else {
+                it
+            }
+        }
+    }
+
+    private suspend fun toggle(
+        element: Element,
+        target: Element
+    ): Element {
+        return withContext(Dispatchers.Default) {
+            when (element) {
+                is Element.Array -> {
+                    if (element == target) {
+                        element.copy(isCollapsed = !element.isCollapsed)
+                    } else {
+                        element.copy(
+                            elements = element.elements.map {
+                                toggle(it, target)
+                            }
+                        )
+                    }
+                }
+
+                is Element.Object -> {
+                    if (element == target) {
+                        element.copy(isCollapsed = !element.isCollapsed)
+                    } else {
+                        element.copy(
+                            properties = element.properties.map {
+                                it.key to toggle(it.value, target)
+                            }.toMap()
+                        )
+                    }
+                }
+
+                else -> element
+            }
         }
     }
 }

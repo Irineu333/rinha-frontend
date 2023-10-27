@@ -17,7 +17,8 @@ data class LinesFactory(
                             indent = indent,
                             parent = parent,
                             type = Line.Type.ARRAY,
-                            collapsed = element.isCollapsed
+                            collapsed = element.isCollapsed,
+                            ref = element
                         )
                     )
 
@@ -28,7 +29,7 @@ data class LinesFactory(
                             build(
                                 element = it,
                                 indent = indent + 1,
-                                parent = Line.Parent.Array(index)
+                                parent = Line.Parent.Array(index),
                             )
                         )
                     }
@@ -37,7 +38,8 @@ data class LinesFactory(
                         Line.Struct.End(
                             indent = indent,
                             parent = parent,
-                            type = Line.Type.ARRAY
+                            type = Line.Type.ARRAY,
+                            ref = element
                         )
                     )
                 }
@@ -48,7 +50,8 @@ data class LinesFactory(
                             indent = indent,
                             parent = parent,
                             type = Line.Type.OBJECT,
-                            collapsed = element.isCollapsed
+                            collapsed = element.isCollapsed,
+                            ref = element
                         )
                     )
 
@@ -68,7 +71,8 @@ data class LinesFactory(
                         Line.Struct.End(
                             indent = indent,
                             parent = parent,
-                            type = Line.Type.OBJECT
+                            type = Line.Type.OBJECT,
+                            ref = element
                         )
                     )
                 }

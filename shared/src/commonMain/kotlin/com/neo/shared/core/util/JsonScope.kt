@@ -3,6 +3,7 @@ package com.neo.shared.core.util
 import com.neo.shared.core.model.Line
 
 abstract class JsonScope(private val indent: Int) {
+    
     private val lines = mutableListOf<Line>()
 
     fun addLiteral(line: Line.Literal) {
@@ -18,10 +19,10 @@ abstract class JsonScope(private val indent: Int) {
 
         lines.add(
             Line.Struct.Start(
-                indent,
-                parent,
-                type,
-                collapsed
+                indent =indent,
+                parent = parent,
+                type = type,
+                collapsed = collapsed
             )
         )
 
@@ -31,9 +32,9 @@ abstract class JsonScope(private val indent: Int) {
 
         lines.add(
             Line.Struct.End(
-                indent,
-                parent,
-                type
+                indent = indent,
+                parent = parent,
+                type = type
             )
         )
     }

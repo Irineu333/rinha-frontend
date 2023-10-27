@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.neo.shared.core.model.Element
 import com.neo.shared.core.model.Line
 import com.neo.shared.core.model.ending
 import com.neo.shared.core.model.opening
@@ -20,7 +21,7 @@ import com.neo.shared.core.model.opening
 fun LineViewer(
     line: Line,
     modifier: Modifier = Modifier,
-    onToggle: (Line) -> Unit = {}
+    onToggle: (Element) -> Unit = {}
 ) = Row(
     modifier.drawBehind {
         for (indent in 1..line.indent) {
@@ -40,7 +41,7 @@ fun LineViewer(
 
     Row(
         Modifier.clickable(line is Line.Struct) {
-            onToggle(line)
+            onToggle(checkNotNull((line as Line.Struct).ref))
         }
     ) {
         if (line !is Line.Struct.End) {
