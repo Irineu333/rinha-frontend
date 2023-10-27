@@ -5,7 +5,6 @@ sealed interface Line {
     val indent: Int
     val parent: Parent
 
-
     sealed interface Struct : Line {
 
         val type: Type

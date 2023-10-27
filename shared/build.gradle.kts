@@ -25,6 +25,9 @@ kotlin {
 
                 // Voyager Navigator
                 api("cafe.adriel.voyager:voyager-navigator:1.0.0-rc05")
+
+                // Kotlin Serialization
+                api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
             }
         }
 
@@ -34,6 +37,9 @@ kotlin {
                 // Compose
                 api(compose.desktop.common)
                 api(compose.preview)
+
+                // For Dispatchers.Main
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.4")
             }
         }
     }
