@@ -1,8 +1,12 @@
 package com.neo.shared.ui.viewer
 
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,8 +43,11 @@ data class ViewerScreen(
             }
 
             is Resource.Result.Success -> {
+                val state = rememberLazyListState()
+
                 LinesViewer(
                     lines = lines.data,
+                    state = state,
                     contentPadding = PaddingValues(16.dp),
                     onToggle = {
                         coroutineScope.launch {
@@ -48,6 +55,13 @@ data class ViewerScreen(
                         }
                     },
                     modifier = Modifier.fillMaxSize()
+                )
+
+                VerticalScrollbar(
+                    adapter = rememberScrollbarAdapter(state),
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .fillMaxHeight()
                 )
             }
 

@@ -2,7 +2,9 @@ package com.neo.shared.core.component
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -14,8 +16,9 @@ fun LinesViewer(
     lines: List<Line>,
     modifier: Modifier = Modifier,
     onToggle: (Element) -> Unit = {},
+    state: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(0.dp)
-) = LazyColumn(modifier, contentPadding = contentPadding) {
+) = LazyColumn(modifier,state = state, contentPadding = contentPadding) {
     items(lines) { line ->
         LineViewer(
             line = line,
