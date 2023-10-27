@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.neo.shared.core.model.Element
 import com.neo.shared.core.model.Line
@@ -32,6 +33,7 @@ fun LineViewer(
                 color = Color.Black,
                 start = Offset(x = x, y = 0f),
                 end = Offset(x = x, y = size.height),
+                strokeWidth = Dp(0.5f).toPx()
             )
         }
     }
