@@ -10,7 +10,7 @@ fun JsonElement.toElement(): Element {
 
     return when (this) {
         is JsonPrimitive -> {
-            Element.Literal(this)
+            Element.Literal(value = this)
         }
 
         is JsonObject -> {

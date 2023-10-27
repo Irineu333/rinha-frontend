@@ -28,6 +28,8 @@ kotlin {
 
                 // Kotlin Serialization
                 api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+
+                api("com.benasher44:uuid:0.8.1")
             }
         }
 
