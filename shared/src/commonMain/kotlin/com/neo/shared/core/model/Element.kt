@@ -1,7 +1,5 @@
 package com.neo.shared.core.model
 
-import com.neo.shared.core.util.createObject
-
 sealed class Element {
 
     data class Literal(
@@ -21,7 +19,12 @@ sealed class Element {
 }
 
 fun Element.getLines(origin: String): List<Line> {
-    return createObject(origin) {
-        addLiteral("text", "Hello World!")
-    }
+    return LinesFactory(
+        fileName = origin,
+        origin = this
+    ).build(
+        element = this,
+        indent = 0,
+        parent = Line.Parent.Object(origin)
+    )
 }
