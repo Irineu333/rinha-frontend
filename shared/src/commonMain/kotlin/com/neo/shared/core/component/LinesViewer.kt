@@ -15,7 +15,7 @@ import com.neo.shared.core.model.Line
 fun LinesViewer(
     lines: List<Line>,
     modifier: Modifier = Modifier,
-    onToggle: (Element) -> Unit = {},
+    onToggle: (Element.Struct) -> Unit = {},
     state: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) = LazyColumn(modifier,state = state, contentPadding = contentPadding) {

@@ -22,7 +22,7 @@ import com.neo.shared.core.model.opening
 fun LineViewer(
     line: Line,
     modifier: Modifier = Modifier,
-    onToggle: (Element) -> Unit = {}
+    onToggle: (Element.Struct) -> Unit = {}
 ) = Row(
     modifier.drawBehind {
         for (indent in 1..line.indent) {

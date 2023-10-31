@@ -14,7 +14,7 @@ fun JsonElement.toElement(): Element {
         }
 
         is JsonObject -> {
-            Element.Object(
+            Element.Struct.Object(
                 properties = map {
                     it.key to it.value.toElement()
                 }.toMap()
@@ -22,7 +22,7 @@ fun JsonElement.toElement(): Element {
         }
 
         is JsonArray -> {
-            Element.Array(
+            Element.Struct.Array(
                 elements = map {
                     it.toElement()
                 }

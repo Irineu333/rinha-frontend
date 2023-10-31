@@ -40,10 +40,10 @@ class ViewerViewModel(private val file: File) : ScreenModel {
     )
 
     init {
-        handle(file.content)
+        tokenizeJson(file.content)
     }
 
-    fun handle(content: String) = coroutineScope.launch {
+    private fun tokenizeJson(content: String) = coroutineScope.launch {
 
         _elements.value = Resource.Loading
 
@@ -76,7 +76,7 @@ class ViewerViewModel(private val file: File) : ScreenModel {
     ): Element {
         return withContext(Dispatchers.Default) {
             when (element) {
-                is Element.Array -> {
+                is Element.Struct.Array -> {
                     if (element == target) {
                         element.copy(isCollapsed = !element.isCollapsed)
                     } else {
@@ -88,7 +88,7 @@ class ViewerViewModel(private val file: File) : ScreenModel {
                     }
                 }
 
-                is Element.Object -> {
+                is Element.Struct.Object -> {
                     if (element == target) {
                         element.copy(isCollapsed = !element.isCollapsed)
                     } else {
