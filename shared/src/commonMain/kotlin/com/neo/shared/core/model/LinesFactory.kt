@@ -5,13 +5,13 @@ data class LinesFactory(
     private val origin: Element
 ) {
     fun build(
-        element: Element,
+        element: Element = origin,
         indent: Int = 0,
-        parent: Line.Parent
+        parent: Line.Parent = Line.Parent.Object(fileName)
     ): List<Line> {
         return buildList {
             when (element) {
-                is Element.Array -> {
+                is Element.Struct.Array -> {
                     add(
                         Line.Struct.Start(
                             indent = indent,
@@ -44,7 +44,7 @@ data class LinesFactory(
                     )
                 }
 
-                is Element.Object -> {
+                is Element.Struct.Object -> {
                     add(
                         Line.Struct.Start(
                             indent = indent,
@@ -58,13 +58,13 @@ data class LinesFactory(
                     if (element.isCollapsed) return@buildList
 
                     element.properties.forEach {
-                       addAll(
-                           build(
-                               element = it.value,
-                               indent = indent + 1,
-                               parent = Line.Parent.Object(it.key)
-                           )
-                       )
+                        addAll(
+                            build(
+                                element = it.value,
+                                indent = indent + 1,
+                                parent = Line.Parent.Object(it.key)
+                            )
+                        )
                     }
 
                     add(

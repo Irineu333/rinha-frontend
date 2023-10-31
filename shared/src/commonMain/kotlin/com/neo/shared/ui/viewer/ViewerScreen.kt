@@ -11,7 +11,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +20,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.neo.shared.core.component.File
 import com.neo.shared.core.component.LinesViewer
 import com.neo.shared.core.model.Resource
-import kotlinx.coroutines.launch
 
 data class ViewerScreen(
     private val file: File
@@ -34,8 +32,6 @@ data class ViewerScreen(
     ) {
 
         val viewModel = rememberScreenModel { ViewerViewModel(file) }
-
-        val coroutineScope = rememberCoroutineScope()
 
         when (val lines = viewModel.lines.collectAsState().value) {
             is Resource.Result.Failure -> {
@@ -50,9 +46,7 @@ data class ViewerScreen(
                     state = state,
                     contentPadding = PaddingValues(16.dp),
                     onToggle = {
-                        coroutineScope.launch {
-                            viewModel.toggle(it)
-                        }
+                        viewModel.toggleExpansion(it)
                     },
                     modifier = Modifier.fillMaxSize()
                 )

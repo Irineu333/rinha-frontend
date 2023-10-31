@@ -8,13 +8,13 @@ sealed interface Line {
     sealed interface Struct : Line {
 
         val type: Type
-        val ref: Element?
+        val ref: Element.Struct?
 
         data class Start(
             override val indent: Int,
             override val parent: Parent,
             override val type: Type,
-            override val ref: Element? = null,
+            override val ref: Element.Struct? = null,
             val collapsed: Boolean = false
         ) : Struct
 
@@ -22,7 +22,7 @@ sealed interface Line {
             override val indent: Int,
             override val parent: Parent,
             override val type: Type,
-            override val ref: Element? = null,
+            override val ref: Element.Struct? = null,
         ) : Struct
     }
 
