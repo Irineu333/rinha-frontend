@@ -2,7 +2,7 @@ name: Publish
 on:
   push:
     branches:
-      - master
+      - main
 
 permissions:
   contents: write
@@ -21,9 +21,9 @@ jobs:
           java-version: 19
 
       - name: Build
-        run: ./gradlew jsBrowserDistribution
+        run: ./gradlew web:jsBrowserDistribution
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: build/dist/js/productionExecutable
+          folder: web/build/dist/js/productionExecutable
