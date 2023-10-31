@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.neo.shared.core.component.File
 import com.neo.shared.core.model.Element
+import com.neo.shared.core.model.Line
 import com.neo.shared.core.model.Resource
 import com.neo.shared.core.model.getLines
 import com.neo.shared.core.util.toElement
@@ -19,38 +20,23 @@ class ViewerViewModel(private val file: File) : ScreenModel {
 
     private val _elements = MutableStateFlow<Resource<Element, String>>(Resource.Loading)
 
-    val lines = _elements.map {
-        when (it) {
-            is Resource.Result.Success -> {
-                Resource.Result.Success(
-                    it.data.getLines(file.name)
-                )
-            }
-
-            is Resource.Result.Failure -> {
-                Resource.Result.Failure(it.error)
-            }
-
-            Resource.Loading -> Resource.Loading
-        }
-    }.stateIn(
-        scope = coroutineScope,
-        initialValue = Resource.Loading,
-        started = SharingStarted.WhileSubscribed()
-    )
+    private val _lines = MutableStateFlow<Resource<List<Line>, String>>(Resource.Loading)
+    val lines = _lines.asStateFlow()
 
     init {
-        tokenizeJson(file.content)
+        coroutineScope.launch {
+            tokenizeJson()
+            renderJson()
+        }
     }
 
-    private fun tokenizeJson(content: String) = coroutineScope.launch {
-
+    private suspend fun tokenizeJson() {
         _elements.value = Resource.Loading
 
         _elements.value = runCatching {
             Resource.Result.Success(
                 withContext(Dispatchers.Default) {
-                    json.parseToJsonElement(content).toElement()
+                    json.parseToJsonElement(file.content).toElement()
                 }
             )
         }.getOrElse {
@@ -58,50 +44,28 @@ class ViewerViewModel(private val file: File) : ScreenModel {
         }
     }
 
-    suspend fun toggle(element: Element) {
-        _elements.update {
-            if (it is Resource.Result.Success) {
-                Resource.Result.Success(
-                    toggle(it.data, element)
-                )
-            } else {
-                it
+    private suspend fun renderJson() {
+        _lines.value = when (val value = _elements.value) {
+            is Resource.Loading -> {
+                Resource.Loading
+            }
+
+            is Resource.Result.Failure -> {
+                Resource.Result.Failure(value.error)
+            }
+
+            is Resource.Result.Success -> {
+                withContext(Dispatchers.Default) {
+                    Resource.Result.Success(
+                        value.data.getLines(file.name)
+                    )
+                }
             }
         }
     }
 
-    private suspend fun toggle(
-        element: Element,
-        target: Element
-    ): Element {
-        return withContext(Dispatchers.Default) {
-            when (element) {
-                is Element.Struct.Array -> {
-                    if (element == target) {
-                        element.copy(isCollapsed = !element.isCollapsed)
-                    } else {
-                        element.copy(
-                            elements = element.elements.map {
-                                toggle(it, target)
-                            }
-                        )
-                    }
-                }
-
-                is Element.Struct.Object -> {
-                    if (element == target) {
-                        element.copy(isCollapsed = !element.isCollapsed)
-                    } else {
-                        element.copy(
-                            properties = element.properties.map {
-                                it.key to toggle(it.value, target)
-                            }.toMap()
-                        )
-                    }
-                }
-
-                else -> element
-            }
-        }
+    fun toggleExpansion(element: Element.Struct) = coroutineScope.launch {
+        element.isCollapsed = !element.isCollapsed
+        renderJson()
     }
 }
